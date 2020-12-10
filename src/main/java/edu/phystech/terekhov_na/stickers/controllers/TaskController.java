@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -26,7 +27,7 @@ public class TaskController {
     private final TabDao tabDao;
 
     @GetMapping("/tasks")
-    public ResponseEntity<?> getTasksFromActiveTab(@CookieValue("user_id") String userId) {
+    public ResponseEntity<?> getTasksFromActiveTab(@AuthenticationPrincipal String userId) {
         log.info("Request to get tasks for user {}", userId);
         return userDao.getActiveTab(userId)
                 .<ResponseEntity<?>>map(tab -> ResponseEntity.ok(tab.getTasks()))
@@ -34,7 +35,7 @@ public class TaskController {
     }
 
     @PostMapping("/tasks")
-    public ResponseEntity<?> addTask(@RequestBody Task task, @CookieValue("user_id") String userId) {
+    public ResponseEntity<?> addTask(@RequestBody Task task, @AuthenticationPrincipal String userId) {
         log.info("Request to add for user {} task: {}", userId, task);
         return userDao.getActiveTab(userId).<ResponseEntity<?>>map(tab -> {
             tabDao.addTask(tab, task);

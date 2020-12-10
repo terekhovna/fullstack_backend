@@ -9,8 +9,10 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -24,7 +26,7 @@ public class TabController {
     private final TabDao tabDao;
 
     @GetMapping("/tabs")
-    public ResponseEntity<?> getData(@CookieValue("user_id") String userId) {
+    public ResponseEntity<?> getData(@AuthenticationPrincipal String userId) {
         log.info("Get tabs for user {}", userId);
         userRepository.findAll().forEach(System.out::println);
         return userDao.getUserById(userId).<ResponseEntity<?>>map(
@@ -32,8 +34,14 @@ public class TabController {
                 .getOrElseGet(ResponseUtils::buildError);
     }
 
+    @DeleteMapping("/tabs")
+    public ResponseEntity<?> haha(@AuthenticationPrincipal String userId) {
+        log.info(userId.toString());
+        return ResponseEntity.ok("{}");
+    }
+
     @PostMapping("/tabs")
-    public ResponseEntity<?> addTab(@RequestBody Tab tab, @CookieValue("user_id") String userId) {
+    public ResponseEntity<?> addTab(@RequestBody Tab tab, @AuthenticationPrincipal String userId) {
         log.info("Add tab {} for user {}", tab, userId);
         return userDao.getUserById(userId).<ResponseEntity<?>>map(user ->
                 ResponseUtils.makeResponse(userDao.addTab(user, tab)))
@@ -41,7 +49,7 @@ public class TabController {
     }
 
     @PostMapping("/tabs/{id}")
-    public ResponseEntity<?> changeActiveTab(@CookieValue("user_id") String userId, @PathVariable Long id) {
+    public ResponseEntity<?> changeActiveTab(@AuthenticationPrincipal String userId, @PathVariable Long id) {
         log.info("change active tab for user {} on {}", userId, id);
         return userDao.getUserById(userId).<ResponseEntity<?>>map(user ->
                 ResponseUtils.makeResponse(userDao.setActiveTab(user, id)))
