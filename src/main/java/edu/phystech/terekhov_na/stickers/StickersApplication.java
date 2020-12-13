@@ -24,7 +24,7 @@ public class StickersApplication {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:3000", "http://178.154.235.120:3000/")
+                        .allowedOrigins("http://localhost:3000", "http://178.154.235.120:3000")
                         .allowCredentials(true);
             }
         };
