@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class Initializer implements CommandLineRunner {
     private final TaskRepository taskRepository;
 
     @Override
+    @Transactional
     public void run(String... strings) {
         Task task = new Task();
 //        task.setDeadline(Instant.now());
@@ -33,7 +35,7 @@ public class Initializer implements CommandLineRunner {
                 .password("key")
                 .userData(userData).build();
 
-        userRepository.saveAndFlush(user);
+//        userRepository.saveAndFlush(user);
 
         taskRepository.findAll().forEach(System.out::println);
         tabRepository.findAll().forEach(System.out::println);

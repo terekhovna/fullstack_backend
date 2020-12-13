@@ -32,6 +32,6 @@ public class TabDao {
         }
         task.setTab(tab);
         tasks.add(task);
-        tabRepository.save(tab);
+        tabRepository.saveAndFlush(tab);
     }
 }

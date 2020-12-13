@@ -6,9 +6,9 @@ import io.vavr.control.Either;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +21,7 @@ public class UserDao {
     private final TabRepository tabRepository;
     private final UserDataRepository userDataRepository;
 
+    @Transactional
     public Either<String, User> getUserById(String userId) {
         long id;
         try {
@@ -33,6 +34,7 @@ public class UserDao {
                 .orElse(Either.left("not such user"));
     }
 
+    @Transactional
     public Either<String, User> getUserByLoginOrEmail(String login, String email) {
         if (login != null && !login.isEmpty()) {
             return userRepository.findByLogin(login).<Either<String, User>>map(Either::right)
@@ -44,6 +46,7 @@ public class UserDao {
         }
     }
 
+    @Transactional
     public Either<String, Tab> getActiveTab(User user) {
         var userData = user.getUserData();
         if (userData == null) {
@@ -58,10 +61,12 @@ public class UserDao {
                 .orElse(Either.left("wrong active tab"));
     }
 
+    @Transactional
     public Either<String, Tab>  getActiveTab(String userId) {
         return getUserById(userId).flatMap(this::getActiveTab);
     }
 
+    @Transactional
     public Optional<String> addTab(User user, Tab tab) {
         if(tab.getId() != null && tabRepository.findById(tab.getId()).isPresent()) {
             return Optional.of("tab already exists");
@@ -70,11 +75,15 @@ public class UserDao {
         userDataToUpdate.getTabs().add(
                 Tab.builder().title(tab.getTitle()).tasks(List.of()).build());
         userDataRepository.save(userDataToUpdate);
-        log.info(userDataToUpdate.toString());
+        if(userDataToUpdate.getActiveTabId() == null) {
+            userDataToUpdate.setActiveTabId(userDataToUpdate.getTabs().get(0).getId());
+            userDataRepository.save(userDataToUpdate);
+        }
         userDataRepository.findAll().forEach(System.out::println);
         return Optional.empty();
     }
 
+    @Transactional
     public Optional<String> setActiveTab(User user, Long tabId) {
         UserData userDataToUpdate = userDataRepository.getOne(user.getUserData().getId());
         if(userDataToUpdate.getTabs().stream().noneMatch(tab -> tab.getId().equals(tabId))) {
@@ -86,7 +95,7 @@ public class UserDao {
         return Optional.empty();
     }
 
-
+    @Transactional
     public Either<String, User> addUser(User user) {
         if(user.getLogin() == null) {
             return Either.left("login is null");
