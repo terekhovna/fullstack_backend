@@ -26,7 +26,7 @@ public class TaskDao {
     public Optional<String> updateTask(Task taskToUpdate) {
         return taskRepository.findById(taskToUpdate.getId()).<Optional<String>>map(task -> {
             taskToUpdate.setTab(task.getTab());
-            taskRepository.save(task);
+            taskRepository.save(taskToUpdate);
             return Optional.empty();
         }).orElse(Optional.of("no such task"));
     }
