@@ -1,4 +1,4 @@
-*.mv.db
+dd.*.db
 
 HELP.md
 target/
