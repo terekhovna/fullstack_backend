@@ -36,7 +36,6 @@ public class Initializer implements CommandLineRunner {
                 .userData(userData).build();
 
 //        userRepository.saveAndFlush(user);
-
         taskRepository.findAll().forEach(System.out::println);
         tabRepository.findAll().forEach(System.out::println);
         userDataRepository.findAll().forEach(System.out::println);
