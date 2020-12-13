@@ -1,27 +1,23 @@
 package edu.phystech.terekhov_na.stickers.dao;
 
-import edu.phystech.terekhov_na.stickers.controllers.TaskController;
 import edu.phystech.terekhov_na.stickers.model.*;
 import io.vavr.control.Either;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Repository
+@Transactional
 @AllArgsConstructor
 public class UserDao {
-    private final Logger log = LoggerFactory.getLogger(UserDao.class);
     private final UserRepository userRepository;
-    private final TaskRepository taskRepository;
     private final TabRepository tabRepository;
     private final UserDataRepository userDataRepository;
 
-    @Transactional
     public Either<String, User> getUserById(String userId) {
         long id;
         try {
@@ -34,7 +30,6 @@ public class UserDao {
                 .orElse(Either.left("not such user"));
     }
 
-    @Transactional
     public Either<String, User> getUserByLoginOrEmail(String login, String email) {
         if (login != null && !login.isEmpty()) {
             return userRepository.findByLogin(login).<Either<String, User>>map(Either::right)
@@ -46,7 +41,6 @@ public class UserDao {
         }
     }
 
-    @Transactional
     public Either<String, Tab> getActiveTab(User user) {
         var userData = user.getUserData();
         if (userData == null) {
@@ -61,29 +55,27 @@ public class UserDao {
                 .orElse(Either.left("wrong active tab"));
     }
 
-    @Transactional
-    public Either<String, Tab>  getActiveTab(String userId) {
+    public Either<String, Tab> getActiveTab(String userId) {
         return getUserById(userId).flatMap(this::getActiveTab);
     }
 
-    @Transactional
     public Optional<String> addTab(User user, Tab tab) {
         if(tab.getId() != null && tabRepository.findById(tab.getId()).isPresent()) {
-            return Optional.of("tab already exists");
+            return Optional.of("invalid tab");
         }
+
         UserData userDataToUpdate = userDataRepository.getOne(user.getUserData().getId());
         userDataToUpdate.getTabs().add(
                 Tab.builder().title(tab.getTitle()).tasks(List.of()).build());
         userDataRepository.save(userDataToUpdate);
+
         if(userDataToUpdate.getActiveTabId() == null) {
             userDataToUpdate.setActiveTabId(userDataToUpdate.getTabs().get(0).getId());
             userDataRepository.save(userDataToUpdate);
         }
-        userDataRepository.findAll().forEach(System.out::println);
         return Optional.empty();
     }
 
-    @Transactional
     public Optional<String> setActiveTab(User user, Long tabId) {
         UserData userDataToUpdate = userDataRepository.getOne(user.getUserData().getId());
         if(userDataToUpdate.getTabs().stream().noneMatch(tab -> tab.getId().equals(tabId))) {
@@ -91,11 +83,9 @@ public class UserDao {
         }
         userDataToUpdate.setActiveTabId(tabId);
         userDataRepository.save(userDataToUpdate);
-        userDataRepository.findAll().forEach(System.out::println);
         return Optional.empty();
     }
 
-    @Transactional
     public Either<String, User> addUser(User user) {
         if(user.getLogin() == null) {
             return Either.left("login is null");
@@ -117,5 +107,9 @@ public class UserDao {
                 .login(user.getLogin())
                 .userData(UserData.builder().tabs(List.of()).build())
                 .password(user.getPassword()).build()));
+    }
+
+    public void logAllUsers() {
+        userRepository.findAll().forEach(System.out::println);
     }
 }

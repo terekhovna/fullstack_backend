@@ -1,29 +1,22 @@
 package edu.phystech.terekhov_na.stickers.dao;
 
-import edu.phystech.terekhov_na.stickers.controllers.TaskController;
-import edu.phystech.terekhov_na.stickers.model.*;
+import edu.phystech.terekhov_na.stickers.model.Tab;
+import edu.phystech.terekhov_na.stickers.model.TabRepository;
+import edu.phystech.terekhov_na.stickers.model.Task;
 import lombok.AllArgsConstructor;
-import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Optional;
 
-@Component
+@Repository
+@Transactional
 @AllArgsConstructor
 public class TabDao {
-    private final Logger log = LoggerFactory.getLogger(TaskController.class);
-    private final UserRepository userRepository;
-    private final TaskRepository taskRepository;
     private final TabRepository tabRepository;
 
-    @Transactional
     public void addTask(Tab tab, Task task) {
+        task.setId(null);
         tab = tabRepository.getOne(tab.getId());
         var tasks = tab.getTasks();
         if(tasks == null) {
@@ -32,6 +25,6 @@ public class TabDao {
         }
         task.setTab(tab);
         tasks.add(task);
-        tabRepository.saveAndFlush(tab);
+        tabRepository.save(tab);
     }
 }

@@ -1,8 +1,7 @@
 package edu.phystech.terekhov_na.stickers.config;
 
 import edu.phystech.terekhov_na.stickers.security.MyAuthenticationProvider;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @EnableWebSecurity
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MyWebSecurityConfiguredAdapter extends WebSecurityConfigurerAdapter {
 
     private final MyAuthenticationProvider authProvider;
@@ -18,6 +17,8 @@ public class MyWebSecurityConfiguredAdapter extends WebSecurityConfigurerAdapter
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .csrf().disable()
 //                .csrf().ignoringAntMatchers("/api/perform_login").and()
                 .anonymous()
@@ -28,7 +29,7 @@ public class MyWebSecurityConfiguredAdapter extends WebSecurityConfigurerAdapter
 //                .antMatchers("/api/user").authenticated()
                 .anyRequest().permitAll()
                 .and()
-                .formLogin().loginProcessingUrl("/api/perform_login/**").permitAll().successForwardUrl("/api/user")
+                .formLogin().loginProcessingUrl("/api/sign_in/**").permitAll().successForwardUrl("/api/user")
                 .and()
                 .logout().logoutUrl("/api/logout")//.logoutSuccessUrl()
                 .and()

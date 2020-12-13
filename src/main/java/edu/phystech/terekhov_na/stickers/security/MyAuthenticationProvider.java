@@ -2,6 +2,7 @@ package edu.phystech.terekhov_na.stickers.security;
 import edu.phystech.terekhov_na.stickers.dao.UserDao;
 import edu.phystech.terekhov_na.stickers.model.User;
 import edu.phystech.terekhov_na.stickers.model.UserRepository;
+import edu.phystech.terekhov_na.stickers.utils.ErrorToJson;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -29,12 +30,12 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
         User user;
         if(!((String)authentication.getPrincipal()).contains(";")) {
             user = userDao.getUserById((String) authentication.getPrincipal())
-                    .getOrElseThrow(BadCredentialsException::new);
+                    .getOrElseThrow((e) -> new BadCredentialsException(ErrorToJson.errorToJson(e)));
         }
         else {
             String[] userLoginOrEmail = StringUtils.split((String) authentication.getPrincipal(), ";");
             user = userDao.getUserByLoginOrEmail(userLoginOrEmail[0], userLoginOrEmail[1])
-                    .getOrElseThrow(BadCredentialsException::new);
+                    .getOrElseThrow((e) -> new BadCredentialsException(ErrorToJson.errorToJson(e)));
         }
 
         final String storedPassword = user.getPassword();
@@ -42,7 +43,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
         final String password = (String) upAuth.getCredentials();
 
         if (Objects.equals(password, "") || !Objects.equals(password, storedPassword)) {
-            throw new BadCredentialsException("illegal password");
+            throw new BadCredentialsException(ErrorToJson.errorToJson("illegal password"));
         }
 
         final UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(

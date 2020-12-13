@@ -1,29 +1,22 @@
 package edu.phystech.terekhov_na.stickers.controllers;
 
-import edu.phystech.terekhov_na.stickers.dao.TabDao;
 import edu.phystech.terekhov_na.stickers.dao.UserDao;
 import edu.phystech.terekhov_na.stickers.model.Tab;
 import edu.phystech.terekhov_na.stickers.model.UserRepository;
-import io.vavr.control.Either;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.util.List;
-
 @RestController
-//@CrossOrigin(value = "http://localhost:3000", allowCredentials = "true")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class TabController {
     private final Logger log = LoggerFactory.getLogger(TabController.class);
     private final UserDao userDao;
     private final UserRepository userRepository;
-    private final TabDao tabDao;
 
     @GetMapping("/tabs")
     public ResponseEntity<?> getData(@AuthenticationPrincipal String userId) {
@@ -32,12 +25,6 @@ public class TabController {
         return userDao.getUserById(userId).<ResponseEntity<?>>map(
                 user -> ResponseEntity.ok(user.getUserData()))
                 .getOrElseGet(ResponseUtils::buildError);
-    }
-
-    @DeleteMapping("/tabs")
-    public ResponseEntity<?> haha(@AuthenticationPrincipal String userId) { //TODO delete
-        log.info(userId.toString());
-        return ResponseEntity.ok("{}");
     }
 
     @PostMapping("/tabs")

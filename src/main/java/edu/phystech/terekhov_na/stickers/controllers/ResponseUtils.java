@@ -1,15 +1,13 @@
 package edu.phystech.terekhov_na.stickers.controllers;
 
-import org.json.JSONObject;
+import edu.phystech.terekhov_na.stickers.utils.ErrorToJson;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
 public class ResponseUtils {
     public static ResponseEntity<?> buildError(String msg) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("error", msg);
-        return ResponseEntity.badRequest().body(jsonObject.toString());
+        return ResponseEntity.badRequest().body(ErrorToJson.errorToJson(msg));
     }
 
     public static ResponseEntity<?> makeResponse(Optional<String> error) {
