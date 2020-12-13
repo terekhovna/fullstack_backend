@@ -21,7 +21,6 @@ public class TabController {
     @GetMapping("/tabs")
     public ResponseEntity<?> getData(@AuthenticationPrincipal String userId) {
         log.info("Get tabs for user {}", userId);
-        userRepository.findAll().forEach(System.out::println);
         return userDao.getUserById(userId).<ResponseEntity<?>>map(
                 user -> ResponseEntity.ok(user.getUserData()))
                 .getOrElseGet(ResponseUtils::buildError);
