@@ -69,8 +69,8 @@ public class UserDao {
         UserData userDataToUpdate = userDataRepository.getOne(user.getUserData().getId());
         userDataToUpdate.getTabs().add(
                 Tab.builder().title(tab.getTitle()).tasks(List.of()).build());
-
         userDataRepository.save(userDataToUpdate);
+        log.info(userDataToUpdate.toString());
         userDataRepository.findAll().forEach(System.out::println);
         return Optional.empty();
     }

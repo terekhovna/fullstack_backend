@@ -35,7 +35,7 @@ public class TabController {
     }
 
     @DeleteMapping("/tabs")
-    public ResponseEntity<?> haha(@AuthenticationPrincipal String userId) {
+    public ResponseEntity<?> haha(@AuthenticationPrincipal String userId) { //TODO delete
         log.info(userId.toString());
         return ResponseEntity.ok("{}");
     }
