@@ -16,7 +16,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@CrossOrigin(value = "http://localhost:3000", allowCredentials = "true")
+//@CrossOrigin(value = "http://localhost:3000", allowCredentials = "true")
 @AllArgsConstructor
 @RequestMapping("/api")
 public class TabController {

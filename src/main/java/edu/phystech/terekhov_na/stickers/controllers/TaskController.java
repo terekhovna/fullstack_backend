@@ -15,7 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @RestController
-@CrossOrigin(value = "http://localhost:3000", allowCredentials = "true")
+//@CrossOrigin(value = "http://localhost:3000", allowCredentials = "true")
 @AllArgsConstructor
 @RequestMapping("/api")
 public class TaskController {

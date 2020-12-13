@@ -23,8 +23,8 @@ public class StickersApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api")
-                        .allowedOrigins("http://localhost:3000")
+                registry.addMapping("/api/**")
+                        .allowedOrigins("http://localhost:3000", "http://178.154.235.120:3000/")
                         .allowCredentials(true);
             }
         };
