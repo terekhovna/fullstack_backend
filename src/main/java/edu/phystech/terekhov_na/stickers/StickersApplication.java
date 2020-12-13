@@ -26,7 +26,7 @@ public class StickersApplication {
                 registry.addMapping("/api/**")
                         .allowedOrigins("http://localhost:3000", "http://localhost:5000",
                                 "http://178.154.235.120:3000", "http://178.154.235.120",
-                                "http://stickerstodo.mooo.com")
+                                "http://stickerstodo.mooo.com", "http://stickerstodo.mooo.com:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowCredentials(true);
             }
