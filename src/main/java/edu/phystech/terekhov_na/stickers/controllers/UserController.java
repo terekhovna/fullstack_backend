@@ -40,16 +40,16 @@ public class UserController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("user_id", "0");
-        response.addCookie(cookie);
+//        Cookie cookie = new Cookie("user_id", "0");
+//        response.addCookie(cookie);
         return ResponseUtils.makeOk();
     }
 
     @PostMapping("/sign_up")
     public ResponseEntity<?> signUpUser(@RequestBody User user, HttpServletResponse response) {
         return userDao.addUser(user).<ResponseEntity<?>>map(u -> {
-            Cookie cookie = new Cookie("user_id", u.getId().toString());
-            response.addCookie(cookie);
+//            Cookie cookie = new Cookie("user_id", u.getId().toString());
+//            response.addCookie(cookie);
             return ResponseEntity.ok(u);
         }).getOrElseGet(ResponseUtils::buildError);
     }
