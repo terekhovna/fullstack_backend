@@ -1,16 +1,13 @@
 package edu.phystech.terekhov_na.stickers.dao;
 
-import edu.phystech.terekhov_na.stickers.model.*;
+import edu.phystech.terekhov_na.stickers.model.Tab;
+import edu.phystech.terekhov_na.stickers.model.TabRepository;
+import edu.phystech.terekhov_na.stickers.model.Task;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
