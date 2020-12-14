@@ -33,11 +33,11 @@ public class UserDao {
     public Either<String, User> getUserByLoginOrEmail(String login, String email) {
         if (login != null && !login.isEmpty()) {
             return userRepository.findByLogin(login).<Either<String, User>>map(Either::right)
-                    .orElse(Either.left("wrong login"));
+                    .orElse(Either.left("unknown login"));
         }
         else {
             return userRepository.findByEmail(email).<Either<String, User>>map(Either::right)
-                    .orElse(Either.left("wrong email"));
+                    .orElse(Either.left("unknown email"));
         }
     }
 

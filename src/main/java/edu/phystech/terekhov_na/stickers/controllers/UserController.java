@@ -19,6 +19,20 @@ public class UserController {
     private final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserDao userDao;
 
+    @PostMapping("/sign_in_error")
+    public ResponseEntity<?> wrongSignIn(@RequestBody User user) {
+        log.info("Error login for {}", user);
+        var result = userDao.getUserByLoginOrEmail(user.getLogin(), user.getEmail());
+        if(result.isLeft()) {
+            return ResponseUtils.buildError(result.getLeft());
+        }
+        User originalUser = result.get();
+        if(!originalUser.getPassword().equals(user.getPassword())) {
+            return ResponseUtils.buildError("wrong password");
+        }
+        return ResponseUtils.buildError("unknown error");
+    }
+
     @PostMapping("/sign_up")
     public ResponseEntity<?> signUpUser(@RequestBody User user) {
         log.info("Request to sign up user {}", user);
