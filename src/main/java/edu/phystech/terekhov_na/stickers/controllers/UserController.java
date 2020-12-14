@@ -2,11 +2,13 @@ package edu.phystech.terekhov_na.stickers.controllers;
 
 import edu.phystech.terekhov_na.stickers.dao.UserDao;
 import edu.phystech.terekhov_na.stickers.model.User;
+import edu.phystech.terekhov_na.stickers.service.RestoredDataSender;
 import edu.phystech.terekhov_na.stickers.util.ResponseUtils;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,7 @@ public class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserDao userDao;
+    private final RestoredDataSender restoredDataSender;
 
     @PostMapping("/sign_in_error")
     public ResponseEntity<?> wrongSignIn(@RequestBody User user) {
@@ -48,7 +51,13 @@ public class UserController {
         if(result.isLeft()) {
             return ResponseUtils.buildError(result.getLeft());
         }
-        return ResponseEntity.ok().body(result.get());
+        try {
+            restoredDataSender.sendRestoredData(result.get());
+        }
+        catch (MailException e) {
+            return ResponseUtils.buildError(e.getMessage());
+        }
+        return ResponseUtils.makeOk();
     }
 
     @PostMapping("/user")
