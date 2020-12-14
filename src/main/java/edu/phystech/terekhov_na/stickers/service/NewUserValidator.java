@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class NewUserValidator {
     private final UserRepository userRepository;
-    private static final Pattern emailPatter = Pattern.compile("\\w\\w*@\\w\\w*\\.\\w\\w*");
+    private static final Pattern emailPatter = Pattern.compile("\\S\\S*@\\S\\S*\\.\\S\\S*");
 
     private boolean isValidEmail(String email) {
         return emailPatter.matcher(email).matches();
