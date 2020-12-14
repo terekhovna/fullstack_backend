@@ -2,6 +2,7 @@ package edu.phystech.terekhov_na.stickers.controllers;
 
 import edu.phystech.terekhov_na.stickers.dao.UserDao;
 import edu.phystech.terekhov_na.stickers.model.User;
+import edu.phystech.terekhov_na.stickers.util.ResponseUtils;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +54,6 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<?> getData(@AuthenticationPrincipal String userId) {
         log.info("Get data of user {}", userId);
-        if ("anonymousUser".equals(userId)) {
-            return ResponseUtils.makeOk();
-        }
         return userDao.getUserById(userId)
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .getOrElseGet(ResponseUtils::buildError);

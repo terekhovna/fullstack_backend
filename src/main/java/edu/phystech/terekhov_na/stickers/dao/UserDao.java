@@ -1,9 +1,9 @@
 package edu.phystech.terekhov_na.stickers.dao;
 
 import edu.phystech.terekhov_na.stickers.model.*;
+import edu.phystech.terekhov_na.stickers.service.NewUserValidator;
 import io.vavr.control.Either;
-import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -12,18 +12,18 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserDao {
     private final UserRepository userRepository;
     private final TabRepository tabRepository;
     private final UserDataRepository userDataRepository;
+    private final NewUserValidator newUserValidator;
 
     public Either<String, User> getUserById(String userId) {
         long id;
         try {
             id = Long.parseLong(userId);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return Either.left("not such user");
         }
         return userRepository.findById(id).<Either<String, User>>map(Either::right)
@@ -34,8 +34,7 @@ public class UserDao {
         if (login != null && !login.isEmpty()) {
             return userRepository.findByLogin(login).<Either<String, User>>map(Either::right)
                     .orElse(Either.left("unknown login"));
-        }
-        else {
+        } else {
             return userRepository.findByEmail(email).<Either<String, User>>map(Either::right)
                     .orElse(Either.left("unknown email"));
         }
@@ -60,7 +59,7 @@ public class UserDao {
     }
 
     public Optional<String> addTab(User user, Tab tab) {
-        if(tab.getId() != null && tabRepository.findById(tab.getId()).isPresent()) {
+        if (tab.getId() != null && tabRepository.findById(tab.getId()).isPresent()) {
             return Optional.of("invalid tab");
         }
 
@@ -69,7 +68,7 @@ public class UserDao {
                 Tab.builder().title(tab.getTitle()).tasks(List.of()).build());
         userDataRepository.save(userDataToUpdate);
 
-        if(userDataToUpdate.getActiveTabId() == null) {
+        if (userDataToUpdate.getActiveTabId() == null) {
             userDataToUpdate.setActiveTabId(userDataToUpdate.getTabs().get(0).getId());
             userDataRepository.save(userDataToUpdate);
         }
@@ -78,7 +77,7 @@ public class UserDao {
 
     public Optional<String> setActiveTab(User user, Long tabId) {
         UserData userDataToUpdate = userDataRepository.getOne(user.getUserData().getId());
-        if(userDataToUpdate.getTabs().stream().noneMatch(tab -> tab.getId().equals(tabId))) {
+        if (userDataToUpdate.getTabs().stream().noneMatch(tab -> tab.getId().equals(tabId))) {
             return Optional.of("no such tab");
         }
         userDataToUpdate.setActiveTabId(tabId);
@@ -87,26 +86,15 @@ public class UserDao {
     }
 
     public Either<String, User> addUser(User user) {
-        if(user.getLogin() == null) {
-            return Either.left("login is null");
-        }
-        if(user.getEmail() == null) {
-            return Either.left("email is null");
-        }
-        if(user.getPassword() == null) {
-            return Either.left("password is null");
-        }
-        if(userRepository.findByEmail(user.getEmail()).isPresent()) {
-            return Either.left("email exists");
-        }
-        if(userRepository.findByLogin(user.getLogin()).isPresent()) {
-            return Either.left("login exists");
-        }
-        return Either.right(userRepository.save(User.builder()
-                .email(user.getEmail())
-                .login(user.getLogin())
-                .userData(UserData.builder().tabs(List.of()).build())
-                .password(user.getPassword()).build()));
+        return newUserValidator.validateNewUser(user).<Either<String, User>>map(Either::left)
+                .orElseGet(() ->
+                        Either.right(userRepository.save(User.builder()
+                                .email(user.getEmail())
+                                .login(user.getLogin())
+                                .userData(UserData.builder().tabs(List.of()).build())
+                                .password(user.getPassword()).build()))
+                );
+
     }
 
     public void logAllUsers() {

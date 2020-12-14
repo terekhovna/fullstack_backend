@@ -1,6 +1,5 @@
-package edu.phystech.terekhov_na.stickers.controllers;
+package edu.phystech.terekhov_na.stickers.util;
 
-import edu.phystech.terekhov_na.stickers.utils.ErrorToJson;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;

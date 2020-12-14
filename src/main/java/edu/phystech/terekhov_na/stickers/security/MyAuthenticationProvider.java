@@ -2,8 +2,7 @@ package edu.phystech.terekhov_na.stickers.security;
 
 import edu.phystech.terekhov_na.stickers.dao.UserDao;
 import edu.phystech.terekhov_na.stickers.model.User;
-import edu.phystech.terekhov_na.stickers.utils.ErrorToJson;
-import lombok.AllArgsConstructor;
+import edu.phystech.terekhov_na.stickers.util.ErrorToJson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -54,6 +53,6 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(final Class<?> authentication) {
-        return true;
+        return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 }

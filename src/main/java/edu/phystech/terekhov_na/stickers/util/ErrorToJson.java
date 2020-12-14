@@ -1,4 +1,4 @@
-package edu.phystech.terekhov_na.stickers.utils;
+package edu.phystech.terekhov_na.stickers.util;
 
 import org.json.JSONObject;
 

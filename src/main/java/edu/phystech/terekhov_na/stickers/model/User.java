@@ -30,16 +30,4 @@ public class User {
             orphanRemoval = true
     )
     private UserData userData;
-
-//    public void setUserData(UserData userData) {
-//        if (userData == null) {
-//            if (this.userData != null) {
-//                this.userData.setUser(null);
-//            }
-//        }
-//        else {
-//            userData.setUser(this);
-//        }
-//        this.userData = userData;
-//    }
 }

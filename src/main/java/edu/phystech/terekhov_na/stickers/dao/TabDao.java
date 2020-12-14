@@ -3,7 +3,7 @@ package edu.phystech.terekhov_na.stickers.dao;
 import edu.phystech.terekhov_na.stickers.model.Tab;
 import edu.phystech.terekhov_na.stickers.model.TabRepository;
 import edu.phystech.terekhov_na.stickers.model.Task;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 @Repository
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TabDao {
     private final TabRepository tabRepository;
 
