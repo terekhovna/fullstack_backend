@@ -13,7 +13,8 @@ public class RestoredDataSender {
 
     public void sendRestoredData(User user) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("noreply@stickerstodo.mooo.com");
+//        message.setFrom("noreply@stickerstodo.mooo.com");
+        message.setFrom("6kola6@gmail.com");
         message.setTo(user.getEmail());
         message.setSubject("your restored data");
         message.setText(String.format("Login: %s\nEmail: %s\nPassword: %s\n",
